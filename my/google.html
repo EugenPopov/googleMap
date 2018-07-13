@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple Polylines</title>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+
+
+    db = openDatabase("ToDo", "0.1", "A list of to do items.", 200000);
+    // This example creates a 2-pixel-wide red polyline showing the path of
+    // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+    // Australia which was made by Charles Kingsford Smith.
+
+    function initMap() {
+        var xhr = new XMLHttpRequest();xhr.open('GET', 'data1.json', false);xhr.send();if (xhr.status != 200) {// обработать ошибку
+            alert( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
+        } else {  var data1 = xhr.responseText;
+
+        }
+        var variable = JSON.parse(data1);
+        for(var i=0; i<variable.length; i++) {
+            var xy = (variable[i].coordinate);
+            var arr = xy.split(', ');
+            var q = arr[0];
+            var b = arr[1];
+            var myLatLng = {lat: 50.440059, lng: 30.429925};
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: myLatLng
+            });
+
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(q,b),
+                map: map
+            });
+        }
+        var flightPlanCoordinates = [
+            {lat: 50.405317, lng: 30.402567},
+            {lat: 50.440857, lng: 30.431470}
+        ];
+        var flightPath = new google.maps.Polyline({
+            path: flightPlanCoordinates,
+            geodesic: true,
+            strokeColor: '#2e41ff',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCu_oaECZHjQVQTFsYwewCdm67yG62ug0&callback=initMap">
+</script>
+</body>
+</html>
